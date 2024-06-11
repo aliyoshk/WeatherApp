@@ -41,67 +41,58 @@ fun AcceptDialog(image: Painter, title: String?, message: String,
                  onDismissRequest: () -> Unit,
                  onButtonClick: () -> Unit)
 {
-    Dialog(onDismissRequest = onDismissRequest)
+    Dialog(
+        onDismissRequest = onDismissRequest,
+        properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
+    )
     {
-        val showDialog = remember { mutableStateOf(true) }
-        val hideDialogFunc = { showDialog.value = false }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.White, shape = RoundedCornerShape(30.dp))
+                .padding(bottom = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        )
+        {
+            Spacer(modifier = Modifier.height(40.dp))
 
-        if (showDialog.value) {
-            Dialog(
-                onDismissRequest = { hideDialogFunc() },
-                properties = DialogProperties
-                    (dismissOnBackPress = false, dismissOnClickOutside = false)
+            Image(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally)
+                    .background(color = AppBlue, shape = CircleShape)
+                    .padding(20.dp)
+                    .clip(CircleShape)
+                    .size(80.dp),
+                painter = painterResource(R.drawable.ic_suncloud),
+                contentDescription = null,
             )
-            {
-                Column(
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            if (title != null){
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = Color.White, shape = RoundedCornerShape(30.dp))
-                        .padding(bottom = 40.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .align(alignment = Alignment.CenterHorizontally)
+                        .padding(bottom = 10.dp),
+                    text = title,
+                    style = TextStyle(
+                        textAlign = TextAlign.Center, fontWeight = FontWeight.Bold
+                    ),
+                    maxLines = 3,
                 )
-                {
-                    Spacer(modifier = Modifier.height(40.dp))
-
-                    Image(
-                        modifier = Modifier
-                            .align(alignment = Alignment.CenterHorizontally)
-                            .background(color = AppBlue, shape = CircleShape)
-                            .padding(20.dp)
-                            .clip(CircleShape)
-                            .size(80.dp),
-                        painter = painterResource(R.drawable.ic_suncloud),
-                        contentDescription = null,
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    if (title != null){
-                        Text(
-                            modifier = Modifier
-                                .align(alignment = Alignment.CenterHorizontally)
-                                .padding(bottom = 10.dp),
-                            text = title,
-                            style = TextStyle(
-                                textAlign = TextAlign.Center, fontWeight = FontWeight.Bold
-                            ),
-                            maxLines = 3,
-                        )
-                    }
-                    Text(
-                        modifier = Modifier
-                            .align(alignment = Alignment.CenterHorizontally),
-                        text = message,
-                        style = TextStyle(
-                            textAlign = TextAlign.Center
-                        ),
-                        maxLines = 3,
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-
-                    AppButton("Allow location", onClick = { onButtonClick() })
-                }
             }
+            Text(
+                modifier = Modifier
+                    .align(alignment = Alignment.CenterHorizontally),
+                text = message,
+                style = TextStyle(
+                    textAlign = TextAlign.Center
+                ),
+                maxLines = 3,
+            )
+            Spacer(modifier = Modifier.height(30.dp))
+
+            AppButton("Allow location", onClick = { onButtonClick() })
         }
     }
 }

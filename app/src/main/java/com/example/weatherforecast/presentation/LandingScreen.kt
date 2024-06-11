@@ -1,6 +1,5 @@
 package com.example.weatherforecast.presentation
 
-import androidx.compose.animation.expandVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -17,28 +15,26 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.weatherforecast.R
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
 
 @Composable
-fun LandingPage()
+fun LandingPage(onButtonClick: () -> Unit)
 {
     Box(
         modifier = Modifier
@@ -89,7 +85,7 @@ fun LandingPage()
                     modifier = Modifier.padding(top = 10.dp, bottom = 60.dp)
                 )
 
-                AppButton("Get started", onClick = {})
+                AppButton("Get started", onClick = { onButtonClick() })
 
                 Row{
                     Text("Already have an account ? ")
@@ -132,6 +128,7 @@ fun SliderCarousel(number: Int)
 fun AppLandingPage()
 {
     WeatherForecastTheme {
-        LandingPage()
+        var navController = rememberNavController()
+        LandingPage(onButtonClick = {})
     }
 }
