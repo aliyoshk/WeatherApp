@@ -1,6 +1,7 @@
 package com.example.weatherforecast
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,25 +9,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.weatherforecast.model.RouteTo
 import com.example.weatherforecast.model.Screen
-import com.example.weatherforecast.presentation.AcceptDialog
+import com.example.weatherforecast.presentation.component.AcceptDialog
 import com.example.weatherforecast.presentation.Dashboard
 import com.example.weatherforecast.presentation.LandingPage
-import com.example.weatherforecast.presentation.OptionDialog
+import com.example.weatherforecast.presentation.component.OptionDialog
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
 class MainActivity : ComponentActivity() {
@@ -72,8 +72,13 @@ fun Greeting(navController: NavHostController ,name: String) {
 
     val onGetStart = remember { mutableStateOf(false) }
     val allowLocation = remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-    LandingPage(onButtonClick = { onGetStart.value = true } )
+    LandingPage(onButtonClick = {
+
+        onGetStart.value = true
+        Toast.makeText(context, "Proceed button click", Toast.LENGTH_SHORT).show()
+    } )
 
     if (onGetStart.value)
     {
@@ -92,19 +97,6 @@ fun Greeting(navController: NavHostController ,name: String) {
         navController.navigate(Screen.DashboardScreen.route)
         //Dashboard()
     }
-
-//    if (allowLocation.value) {
-//        OptionDialog(
-//            image = painterResource(id = R.drawable.ic_suncloud),
-//            title = "Location permission needed",
-//            message = "Please enable location permission to get more accurate weather information",
-//            onProceed = {},
-//            onCancel = {},
-//            onDismissRequest = {},
-//            alignment = Alignment.Center,
-//            textAlign = TextAlign.Center
-//        )
-//    }
 }
 
 @Composable
@@ -126,7 +118,7 @@ fun Display()
 @Composable
 fun DefaultPreview() {
     WeatherForecastTheme {
-        var navController = rememberNavController()
+        val navController = rememberNavController()
         Greeting(navController,"Android")
     }
 }

@@ -1,6 +1,8 @@
 package com.example.weatherforecast.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,6 +19,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -25,11 +30,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,9 +46,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherforecast.R
+import com.example.weatherforecast.presentation.component.SliderCarousel
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Dashboard()
 {
@@ -50,11 +61,31 @@ fun Dashboard()
     ) {
         DashboardTop()
 
-        DashboardCard()
+        val context = LocalContext.current
+        val pagerState = rememberPagerState()
+        val countries = listOf("Dhaka", "California", "Beijing", "Moscow", "Nigeria")
+        val weather = listOf("Thunder", "Clear", "Mostly sunny", "Cloudy", "Shower")
+        val deg = listOf("20℃", "5℃", "6℃", "11℃", "-04℃")
+
+        HorizontalPager(pageCount = 3, state = pagerState)
+        { page ->
+            DashboardCard("Lagos", "Cloudy", "35℃")
+        }
+        LaunchedEffect(pagerState) {
+            // Collect from the a snapshotFlow reading the currentPage
+            snapshotFlow {
+                pagerState.currentPage }.collect { page ->
+                // Do something with each page change, for example:
+                // viewModel.sendPageSelectedEvent(page)
+                val mes = "Page change Page changed to ${page.plus(1)}"
+                Toast.makeText(context, mes, Toast.LENGTH_SHORT).show()
+            }
+        }
+//        DashboardCard()
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        SliderCarousel(3)
+        SliderCarousel(3, pagerState.currentPage)
 
         Row(
             modifier = Modifier
@@ -73,8 +104,8 @@ fun Dashboard()
 
         LazyColumn {
             items(5)
-            { index: Int ->
-                DashboardCard()
+            { index ->
+                DashboardCard(countries[index], weather[index], deg[index])
             }
         }
     }
@@ -120,7 +151,7 @@ fun DashboardTop() {
 }
 
 @Composable
-fun DashboardCard()
+fun DashboardCard(country: String, whether: String, degree: String)
 {
     Column(
         modifier = Modifier
@@ -139,7 +170,7 @@ fun DashboardCard()
                     color = Color.White
                 )
                 Text(
-                    text = "Dhaka",
+                    text = country,
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontSize = 35.sp
@@ -160,14 +191,14 @@ fun DashboardCard()
         Row(modifier = Modifier.padding(top = 20.dp))
         {
             Text(
-                text = "Thunder",
+                text = whether,
                 color = Color.White
             )
 
             Spacer(Modifier.weight(1f))
 
             Text(
-                text = "20℃",
+                text = degree,
                 color = Color.White,
             )
         }

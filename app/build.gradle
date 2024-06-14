@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'com.example.weatherforecast'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.example.weatherforecast"
@@ -37,7 +37,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.1.1'
+        kotlinCompilerExtensionVersion '1.4.3'
     }
     packagingOptions {
         resources {

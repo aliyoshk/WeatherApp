@@ -26,9 +26,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.weatherforecast.R
+import com.example.weatherforecast.presentation.component.AppButton
+import com.example.weatherforecast.presentation.component.SliderCarousel
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
@@ -99,36 +99,12 @@ fun LandingPage(onButtonClick: () -> Unit)
     }
 }
 
-@Composable
-fun SliderCarousel(number: Int)
-{
-    Row(
-        modifier = Modifier
-            .padding(bottom = 8.dp), // Space between dots and text
-        horizontalArrangement = Arrangement.Center
-    )
-    {
-        repeat(number)
-        {
-            Box(
-                modifier = Modifier
-                    .size(8.dp)
-                    .clip(CircleShape)
-                    .background(Color.Gray)
-            )
-            if (it < 2) {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-        }
-    }
-}
 
 @Preview(showBackground = true)
 @Composable
 fun AppLandingPage()
 {
     WeatherForecastTheme {
-        var navController = rememberNavController()
         LandingPage(onButtonClick = {})
     }
 }
