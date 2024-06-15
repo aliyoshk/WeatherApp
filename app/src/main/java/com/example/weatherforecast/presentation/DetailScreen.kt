@@ -1,5 +1,6 @@
 package com.example.weatherforecast.presentation
 
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -37,17 +39,29 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.weatherforecast.R
 import com.example.weatherforecast.presentation.component.SliderCarousel
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.LightPurple
 import com.example.weatherforecast.ui.theme.PurpleGrey40
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
+import java.io.Console
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Detail()
+fun Detail(navController: NavHostController, data: String)
 {
+    val r = data.split(" ")
+    val x = r.getOrNull(0) ?: ""
+    val y = r.getOrNull(1) ?: ""
+    val z = r.getOrNull(2) ?: ""
+
+
+    val context = LocalContext.current
+    Toast.makeText(context, "The value pass is $data", Toast.LENGTH_SHORT).show()
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -181,6 +195,7 @@ private fun calculateCurrentOffsetForPage(page: Int, pagerState: PagerState): Fl
 fun DetailPreview()
 {
     WeatherForecastTheme {
-        Detail()
+        val navController = rememberNavController()
+        Detail(navController,"")
     }
 }

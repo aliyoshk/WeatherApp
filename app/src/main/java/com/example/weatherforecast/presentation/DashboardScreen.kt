@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,14 +46,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.weatherforecast.R
+import com.example.weatherforecast.model.Screen
 import com.example.weatherforecast.presentation.component.SliderCarousel
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Dashboard()
+fun Dashboard(navController: NavHostController)
 {
     Column(
         modifier = Modifier
@@ -69,7 +73,7 @@ fun Dashboard()
 
         HorizontalPager(pageCount = 3, state = pagerState)
         { page ->
-            DashboardCard("Lagos", "Cloudy", "35℃")
+            DashboardCard("Lagos", "Cloudy", "35℃", {})
         }
         LaunchedEffect(pagerState) {
             // Collect from the a snapshotFlow reading the currentPage
@@ -102,10 +106,18 @@ fun Dashboard()
 
         Spacer(Modifier.height(15.dp))
 
-        LazyColumn {
+        LazyColumn() {
             items(5)
             { index ->
-                DashboardCard(countries[index], weather[index], deg[index])
+                DashboardCard(
+                    countries[index], weather[index], deg[index],
+                    onClick = {
+                        val data = countries[index] +" "+ weather[index] +" "+ deg[index]
+                        navController.navigate(
+                            Screen.DetailsScreen.route + "/${data}"
+                        )
+                    }
+                )
             }
         }
     }
@@ -151,7 +163,7 @@ fun DashboardTop() {
 }
 
 @Composable
-fun DashboardCard(country: String, whether: String, degree: String)
+fun DashboardCard(country: String, whether: String, degree: String, onClick: () -> Unit)
 {
     Column(
         modifier = Modifier
@@ -159,6 +171,7 @@ fun DashboardCard(country: String, whether: String, degree: String)
             .padding(start = 20.dp, end = 20.dp, top = 10.dp)
             .background(color = AppBlue, RoundedCornerShape(30.dp))
             .padding(20.dp)
+            .clickable { onClick() }
     )
     {
         Row{
@@ -210,6 +223,7 @@ fun DashboardCard(country: String, whether: String, degree: String)
 fun DashboardPreview()
 {
     WeatherForecastTheme {
-        Dashboard()
+        val navController = rememberNavController()
+        Dashboard(navController)
     }
 }

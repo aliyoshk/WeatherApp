@@ -18,13 +18,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.weatherforecast.model.RouteTo
 import com.example.weatherforecast.model.Screen
 import com.example.weatherforecast.presentation.component.AcceptDialog
 import com.example.weatherforecast.presentation.Dashboard
+import com.example.weatherforecast.presentation.Detail
 import com.example.weatherforecast.presentation.LandingPage
 import com.example.weatherforecast.presentation.component.OptionDialog
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
@@ -58,9 +61,24 @@ fun ComposableRoute()
         {
             Greeting(navController, "")
         }
-        composable(RouteTo.Dashboard.name)
+        composable(Screen.DashboardScreen.route)
         {
-            Dashboard()
+            Dashboard(navController)
+        }
+        composable(
+            Screen.DetailsScreen.route + "/{bundle}",
+            arguments = listOf(
+                navArgument("data")
+                {
+                    type = NavType.StringType
+                    defaultValue = "Empty value return"
+                    nullable = true
+                }
+            )
+        )
+        {
+            val data = it.arguments?.getString("bundle")!!
+            Detail(navController, data = data)
         }
     }
 
