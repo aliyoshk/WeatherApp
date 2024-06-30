@@ -25,31 +25,45 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.weatherforecast.R
 import com.example.weatherforecast.model.Screen
+import com.example.weatherforecast.model.domain.WeatherDataRequest
 import com.example.weatherforecast.presentation.component.SliderCarousel
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
@@ -63,7 +77,13 @@ fun Dashboard(navController: NavHostController)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        DashboardTop()
+        var cityName by remember { mutableStateOf("") }
+        DashboardTop(onSearch = { cityName = it })
+
+        PerformApiCall(cityName)
+
+        val viewModel: WeatherViewModel = viewModel()
+        val weatherResponse = viewModel.weatherResponse.collectAsState().value
 
         val context = LocalContext.current
         val pagerState = rememberPagerState()
@@ -71,9 +91,18 @@ fun Dashboard(navController: NavHostController)
         val weather = listOf("Thunder", "Clear", "Mostly sunny", "Cloudy", "Shower")
         val deg = listOf("20℃", "5℃", "6℃", "11℃", "-04℃")
 
-        HorizontalPager(pageCount = 3, state = pagerState)
-        { page ->
-            DashboardCard("Lagos", "Cloudy", "35℃", {})
+        if (weatherResponse != null)
+        {
+            HorizontalPager(pageCount = weatherResponse.name.count(), state = pagerState)
+            { page ->
+
+                DashboardCard(
+                    weatherResponse.name,
+                    weatherResponse.weather[0].description,
+                    "${weatherResponse.wind.deg}℃",
+                    {}
+                )
+            }
         }
         LaunchedEffect(pagerState) {
             // Collect from the a snapshotFlow reading the currentPage
@@ -123,8 +152,12 @@ fun Dashboard(navController: NavHostController)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DashboardTop() {
+fun DashboardTop(onSearch: (String) -> Unit) {
+    var searchClicked by remember { mutableStateOf(false) }
+    var text by remember { mutableStateOf("") }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -147,6 +180,7 @@ fun DashboardTop() {
                 .background(Color.LightGray, CircleShape)
                 .padding(5.dp)
                 .size(30.dp)
+                .clickable { searchClicked = !searchClicked }
         )
 
         Spacer(modifier = Modifier.width(10.dp))
@@ -159,8 +193,27 @@ fun DashboardTop() {
                 .padding(5.dp)
                 .size(30.dp)
         )
+
+        if (searchClicked)
+        {
+            Spacer(modifier = Modifier.width(10.dp))
+            OutlinedTextField(
+                label = { Text("Enter city") },
+                textStyle = TextStyle(color = Color.Blue, fontWeight = FontWeight.Bold),
+                value = text,
+                onValueChange = { text = it },
+                modifier = Modifier
+                    .weight(1f)
+                    .alpha(if (!searchClicked) 0f else 1f),
+                keyboardOptions = KeyboardOptions.Default.copy(
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(onDone = { onSearch(text) } )
+            )
+        }
     }
 }
+
 
 @Composable
 fun DashboardCard(country: String, whether: String, degree: String, onClick: () -> Unit)
@@ -214,6 +267,41 @@ fun DashboardCard(country: String, whether: String, degree: String, onClick: () 
                 text = degree,
                 color = Color.White,
             )
+        }
+    }
+}
+
+@Composable
+private fun PerformApiCall(cityName: String)
+{
+    val viewModel: WeatherViewModel = viewModel()
+    val isLoading = viewModel.isLoading.collectAsState().value
+    val error = viewModel.error.collectAsState().value
+    val weatherResponse = viewModel.weatherResponse.collectAsState().value
+
+    LaunchedEffect(cityName)
+    {
+        if (cityName.isNotEmpty())
+            viewModel.fetchData(WeatherDataRequest(cityName = cityName))
+    }
+
+    if (isLoading)
+    {
+        Text(text = "Loading...")
+        CircularProgressIndicator()
+    }
+    else if (error != null)
+    {
+        Text(text = "Error: $error", color = MaterialTheme.colorScheme.error)
+    }
+    else
+    {
+        weatherResponse?.let { response ->
+            Column {
+                Text(text = "City: ${response.name}")
+                Text(text = "Temperature: ${response.main.temp}")
+                // Display more weather information...
+            }
         }
     }
 }

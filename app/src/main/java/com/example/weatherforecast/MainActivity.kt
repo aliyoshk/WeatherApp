@@ -25,10 +25,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.weatherforecast.model.RouteTo
 import com.example.weatherforecast.model.Screen
+import com.example.weatherforecast.model.domain.WeatherDataRequest
 import com.example.weatherforecast.presentation.component.AcceptDialog
 import com.example.weatherforecast.presentation.Dashboard
 import com.example.weatherforecast.presentation.Detail
 import com.example.weatherforecast.presentation.LandingPage
+import com.example.weatherforecast.presentation.component.DataScreen
 import com.example.weatherforecast.presentation.component.OptionDialog
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 
@@ -43,6 +45,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     ComposableRoute()
+                    //DataScreen(weatherDataRequest = WeatherDataRequest(cityName = "Lagos"))
                 }
             }
         }

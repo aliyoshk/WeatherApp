@@ -109,13 +109,12 @@ fun Detail(navController: NavHostController, data: String)
 
         val pagerState = rememberPagerState()
         HorizontalPager(
-            pageCount = 3 ,
+            pageCount = 3,
             state = pagerState,
             contentPadding = PaddingValues(horizontal = 52.dp)
         )
         {
             DetailCard(it, pagerState)
-            //FallingPoleCard(it, pagerState)
         }
 
         Spacer(Modifier.height(20.dp))
