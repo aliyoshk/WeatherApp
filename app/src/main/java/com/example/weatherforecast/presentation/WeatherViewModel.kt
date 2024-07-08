@@ -44,4 +44,8 @@ class WeatherViewModel : ViewModel() {
             }
         }
     }
+
+    fun clearError() {
+        _error.value = null
+    }
 }

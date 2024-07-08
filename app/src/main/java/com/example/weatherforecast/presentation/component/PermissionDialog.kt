@@ -33,7 +33,7 @@ import com.example.weatherforecast.ui.theme.WeatherForecastTheme
 @Composable
 fun AcceptDialog(image: Painter, title: String?, message: String,
                  onDismissRequest: () -> Unit,
-                 onButtonClick: () -> Unit)
+                 onButtonClick: () -> Unit, buttonText: String = "Allow location")
 {
     Dialog(
         onDismissRequest = onDismissRequest,
@@ -53,11 +53,12 @@ fun AcceptDialog(image: Painter, title: String?, message: String,
             Image(
                 modifier = Modifier
                     .align(alignment = Alignment.CenterHorizontally)
-                    .background(color = AppBlue, shape = CircleShape)
+                    .background(color = if (buttonText == "Dismiss") Color.Red else AppBlue
+                        , shape = CircleShape)
                     .padding(20.dp)
                     .clip(CircleShape)
                     .size(80.dp),
-                painter = painterResource(R.drawable.ic_suncloud),
+                painter = image,
                 contentDescription = null,
             )
 
@@ -86,7 +87,8 @@ fun AcceptDialog(image: Painter, title: String?, message: String,
             )
             Spacer(modifier = Modifier.height(30.dp))
 
-            AppButton("Allow location", onClick = { onButtonClick() })
+            AppButton(buttonText, onClick = { onButtonClick() })
+
         }
     }
 }

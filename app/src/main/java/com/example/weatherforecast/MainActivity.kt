@@ -81,14 +81,14 @@ fun ComposableRoute()
         )
         {
             val data = it.arguments?.getString("bundle")!!
-            Detail(navController, data = data)
+            Detail(data = data)
         }
     }
 
 }
 
 @Composable
-fun Greeting(navController: NavHostController ,name: String) {
+fun Greeting(navController: NavHostController, name: String) {
     Text(text = "Hello $name!")
 
     val onGetStart = remember { mutableStateOf(false) }
@@ -96,7 +96,6 @@ fun Greeting(navController: NavHostController ,name: String) {
     val context = LocalContext.current
 
     LandingPage(onButtonClick = {
-
         onGetStart.value = true
         Toast.makeText(context, "Proceed button click", Toast.LENGTH_SHORT).show()
     } )
@@ -116,7 +115,9 @@ fun Greeting(navController: NavHostController ,name: String) {
     {
         allowLocation.value = false
         navController.navigate(Screen.DashboardScreen.route)
-        //Dashboard()
+        {
+            popUpTo("login") { inclusive = true }
+        }
     }
 }
 

@@ -4,15 +4,12 @@ import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.snapping.SnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,20 +20,17 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -45,13 +39,11 @@ import com.example.weatherforecast.R
 import com.example.weatherforecast.presentation.component.SliderCarousel
 import com.example.weatherforecast.ui.theme.AppBlue
 import com.example.weatherforecast.ui.theme.LightPurple
-import com.example.weatherforecast.ui.theme.PurpleGrey40
 import com.example.weatherforecast.ui.theme.WeatherForecastTheme
-import java.io.Console
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun Detail(navController: NavHostController, data: String)
+fun Detail(data: String)
 {
     val r = data.split(" ")
     val x = r.getOrNull(0) ?: ""
@@ -194,7 +186,6 @@ private fun calculateCurrentOffsetForPage(page: Int, pagerState: PagerState): Fl
 fun DetailPreview()
 {
     WeatherForecastTheme {
-        val navController = rememberNavController()
-        Detail(navController,"")
+        Detail("JohnDoe")
     }
 }

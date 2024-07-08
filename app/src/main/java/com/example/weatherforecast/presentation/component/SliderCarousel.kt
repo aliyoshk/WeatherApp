@@ -34,9 +34,10 @@ fun SliderCarousel(number: Int, currentPage: Int = -1)
                     .clip(CircleShape)
                     .background(color)
             )
-            if (it < 2) {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
+            Spacer(modifier = Modifier.width(8.dp))
+//            if (it < 2) {
+//                Spacer(modifier = Modifier.width(8.dp))
+//            }
         }
     }
 }
